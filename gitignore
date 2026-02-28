@@ -1,0 +1,11 @@
+# Logs
+monitor.log
+
+# Config con credenciales (nunca subir al repo)
+config.py
+
+# Python
+__pycache__/
+*.pyc
+.env
+venv/
