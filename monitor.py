@@ -2,6 +2,11 @@ import requests
 import smtplib
 import time
 import logging
+import sys
+
+# Fix Windows console encoding
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
@@ -95,12 +100,12 @@ def run():
             now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
             if is_up:
-                log.info(f"✅ {name} — OK ({status_code}) — {response_ms}ms")
+                log.info(f"[OK] {name} — OK ({status_code}) — {response_ms}ms")
 
                 # Si estaba caído y volvió, notificar recuperación
                 if not site_status[url]:
                     send_email(
-                        subject=f"✅ [{name}] Sitio recuperado",
+                        subject=f"[OK] [{name}] Sitio recuperado",
                         body=(
                             f"El sitio volvió a estar online.\n\n"
                             f"URL:            {url}\n"
@@ -112,12 +117,12 @@ def run():
                     site_status[url] = True
 
             else:
-                log.warning(f"❌ {name} — CAÍDO (código: {status_code})")
+                log.warning(f"[DOWN] {name} — CAÍDO (código: {status_code})")
 
                 # Solo notificar si antes estaba online (evita spam)
                 if site_status[url]:
                     send_email(
-                        subject=f"🚨 [{name}] Sitio caído",
+                        subject=f"[ALERTA] [{name}] Sitio caído",
                         body=(
                             f"Se detectó que el sitio está caído.\n\n"
                             f"URL:    {url}\n"
